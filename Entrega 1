@@ -1,0 +1,122 @@
+@startuml
+footer: Carlos David Rodriguez Barrios / 202310137
+' Definición de clases principales
+
+class Usuario {
+    +id: int
+    +nombre: String
+    +correo: String
+    +contraseña: String
+    +registrar(): void
+    +iniciarSesion(): void
+    +cerrarSesion(): void
+}
+
+class Estudiante {
+    +intereses: List<String>
+    +progreso: float
+    +verRutasAprendizaje(): List<RutaAprendizaje>
+    +iniciarActividad(actividad: Actividad): void
+    +completarActividad(actividad: Actividad): void
+    +verProgreso(): float
+    +dejarReseña(actividad: Actividad, reseña: Reseña): void
+}
+
+class Profesor {
+    +especialidad: String
+    +crearRutaAprendizaje(ruta: RutaAprendizaje): void
+    +editarRutaAprendizaje(ruta: RutaAprendizaje): void
+    +eliminarRutaAprendizaje(ruta: RutaAprendizaje): void
+    +verReseñas(actividad: Actividad): List<Reseña>
+}
+
+class RutaAprendizaje {
+    +id: int
+    +titulo: String
+    +descripcion: String
+    +nivel: String
+    +duracion: int
+    +calificacion: float
+    +fechaCreacion: Date
+    +fechaModificacion: Date
+    +version: String
+    +esCompletadaPorEstudiante(estudiante: Estudiante): Boolean
+    +obtenerActividades(): List<Actividad>
+    +calcularProgreso(estudiante: Estudiante): float
+    +agregarActividad(actividad: Actividad): void
+}
+
+class Actividad {
+    +id: int
+    +titulo: String
+    +descripcion: String
+    +tipo: String
+    +nivel: String
+    +duracion: int
+    +fechaLimite: Date
+    +estado: String
+    +prerrequisitos: List<Actividad>
+    +actividadesSiguientes: List<Actividad>
+    +completar(estudiante: Estudiante): void
+    +obtenerPrerrequisitos(): List<Actividad>
+    +obtenerActividadesSiguientes(): List<Actividad>
+}
+
+class Cuestionario {
+    +preguntas: List<Pregunta>
+    +puntuacionAprobacion: float
+    +realizarCuestionario(): void
+}
+
+class Pregunta {
+    +textoPregunta: String
+    +opciones: List<String>
+    +opcionCorrecta: int
+    +explicacion: String
+    +evaluarRespuesta(respuesta: int): Boolean
+}
+
+class Reseña {
+    +calificacion: int
+    +comentario: String
+    +crearReseña(estudiante: Estudiante): void
+}
+
+class Tarea {
+    +descripcion: String
+    +enviarTarea(): void
+    +evaluarTarea(exito: boolean): void
+}
+
+class Encuesta {
+    +preguntas: List<String>
+    +enviarEncuesta(): void
+}
+
+' Clases adicionales
+
+class Intereses {
+    +categoria: String
+}
+
+class Categoria {
+    +nombre: String
+}
+
+' Definición de relaciones
+
+Usuario <|-- Estudiante
+Usuario <|-- Profesor
+Profesor "1" -- "0..*" RutaAprendizaje : "crea"
+Estudiante "0..*" -- "0..*" RutaAprendizaje : "se inscribe en"
+RutaAprendizaje "1" -- "0..*" Actividad
+Actividad <|-- Cuestionario
+Actividad <|-- Tarea
+Actividad <|-- Encuesta
+Actividad "0..*" -- "0..*" Actividad : "prerrequisito"
+Actividad "0..*" -- "0..*" Reseña
+Cuestionario "1" -- "0..*" Pregunta
+Estudiante "0..*" -- "0..*" Reseña : "escribe"
+Estudiante "0..*" -- "0..*" Intereses : "tiene"
+Intereses "0..*" -- "0..*" Categoria
+@enduml
